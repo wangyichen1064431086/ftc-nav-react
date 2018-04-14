@@ -1,0 +1,18 @@
+@import './responsetool.scss';
+.btn {
+  display: none;
+  @include oGridRespondTo($until:'L') {
+    display: block;
+  }
+  width:44px;
+  height:44px;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: 0 center;
+}
+.btn--open {
+  background-image: url(http://static.ftchinese.com/ftc-icons/svg/white/hamburger-white.svg);
+}
+.btn--close {
+  background-image: url(http://static.ftchinese.com/ftc-icons/svg/white/cross-white.svg);
+}

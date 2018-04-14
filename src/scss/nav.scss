@@ -1,5 +1,4 @@
 @import './responsetool.scss';
-
 //colors
 $navBackground:#333;//header背景色
 $navColor:#fff;//header文字颜色
@@ -14,7 +13,7 @@ $navColor:#fff;//header文字颜色
   }
 
   @include oGridRespondTo($until:L) {
-    display: none;
+    //display: none;
   }
 }
 

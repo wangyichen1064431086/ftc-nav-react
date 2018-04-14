@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import CSSModules from 'react-css-modules';
 
+import Hamburg from './Hamburg.js';
+
 import nav from '../scss/nav.scss';
+
 
 @CSSModules(nav, {allowMultiple: true})
 class Nav extends React.Component {
@@ -36,10 +39,21 @@ class Nav extends React.Component {
         super(props);
         this.state = {
             selectedTopChannelOrder: this.props.defaultSelectedTopChannelOrder,
-            selectedSubChannelOrder: this.props.defaultSelectedSubChannelOrder
+            selectedSubChannelOrder: this.props.defaultSelectedSubChannelOrder,
+            showMobileNav: false
         }
+        this.clickHamburg = this.clickHamburg.bind(this)
     }
-
+    clickHamburg() {
+        this.setState(prevState => ({
+            showMobileNav:!prevState.showMobileNav
+        }))
+    }
+    renderHamburg() {
+        return (
+            <Hamburg clickHamburg={this.clickHamburg} />
+        )
+    }
     renderTopList() {
         const listStyle = classnames('list','list-top');
         const {channels} = this.props;
@@ -116,10 +130,15 @@ class Nav extends React.Component {
 
     render() {
         return (
+          <div>
+            <div>
+                {this.renderHamburg()}
+            </div>
             <nav role="nav" aria-label="main-navigation" styleName="nav">
                 {this.renderTopList()}
                 {this.renderSubList()}
             </nav>
+          </div>
         );
         
     }
