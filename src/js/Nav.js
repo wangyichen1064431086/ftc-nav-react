@@ -6,17 +6,19 @@ import CSSModules from 'react-css-modules';
 
 import nav from '../scss/nav.scss';
 
-@CSSModules(nav, {allowMultiple: ture})
+@CSSModules(nav, {allowMultiple: true})
 class Nav extends React.Component {
     static propTypes = {
         channels: PropTypes.arrayOf(
             PropTypes.shape({
                 name: PropTypes.string,
                 order: PropTypes.number,
+                url: PropTypes.string,
                 subs: PropTypes.arrayOf(
                     PropTypes.shape({
                         name: PropTypes.string,
-                        order: PropTypes.number
+                        order: PropTypes.number,
+                        url: PropTypes.string
                     })
                 )
             })
@@ -33,21 +35,21 @@ class Nav extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTopChannelOrder: this.props.defaultSelectedTopChannel,
-            selectedSubChannelOrder: this.props.defaultSelectedSubChannel
+            selectedTopChannelOrder: this.props.defaultSelectedTopChannelOrder,
+            selectedSubChannelOrder: this.props.defaultSelectedSubChannelOrder
         }
     }
 
     renderTopList() {
         const listStyle = classnames('list','list-top');
-        const {channels} = this.props.channels;
+        const {channels} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
         const topChannels = channels;
         const topItems = topChannels.map((topChannel, i) => {
             const topItemStyle = classnames({
                 'item': true,
                 'item-top': true,
-                'item-top--selected': topChannel.order === selectedTopChannelOrder
+                'item-top--selected': topChannel.order === this.state.selectedTopChannelOrder
             });
 
             const pushdownChannels = topChannel.subs;
@@ -55,14 +57,18 @@ class Nav extends React.Component {
             if (pushdownChannels && pushdownChannels.length > 0) {
                 pushdownItems = pushdownChannels.map((pushdownChannel, i) => (
                   <li styleName='pushdown-item' key={pushdownChannel.order}>
-                    {pushdownChannel.name}
+                    <a href={pushdownChannel.url}>
+                        {pushdownChannel.name}
+                    </a>
                   </li>
                 ))
             }
 
             return (
                 <li styleName={topItemStyle} key={topChannel.order}>
-                    {topChannel.name}
+                    <a href={topChannel.url}>
+                        {topChannel.name}
+                    </a>
                     {  (pushdownChannels && pushdownChannels.length > 0) &&
                         <ul styleName="pushdown-list">
                             {pushdownItems}
@@ -73,7 +79,7 @@ class Nav extends React.Component {
             )
         });
         return (
-            <ul styleeName={listStyle}>
+            <ul styleName={listStyle}>
                 {topItems}
             </ul>
         )
@@ -81,26 +87,29 @@ class Nav extends React.Component {
 
     renderSubList() {
         const listStyle = classnames('list', 'list-sub');
-        const {channels} = this.props.channels;
+        const {channels} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
+       
         const subChannels = channels.filter(channel => (
             channel.order === selectedTopChannelOrder
         ))[0].subs;
-        const subItems = subChannels.filter(subChannel => {
+        const subItems = subChannels.map(subChannel => {
             const subItemStyle = classnames({
                 item: true,
                 'item-sub':true,
-                'item-sub--selected' : selectedSubChannelOrder
+                'item-sub--selected' : selectedSubChannelOrder === subChannel.order
             })
             return (
                 <li styleName={subItemStyle} key={subChannel.order}>
+                   <a href={subChannel.url}>
                     {subChannel.name}
+                    </a>
                 </li>
             )
         })
         return (
             <ul styleName={listStyle}>
-                {subChannels}
+                {subItems}
             </ul>
         )
     }

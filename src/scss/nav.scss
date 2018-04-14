@@ -1,14 +1,16 @@
-@import './responstool.scss';
+@import './responsetool.scss';
 
 //colors
 $navBackground:#333;//header背景色
 $navColor:#fff;//header文字颜色
 
 .nav {
-  background: $navBackground333;
+  font-family: Microsoft Yahei,SimSun,sans-serif;
+  width:100%;
+  background: $navBackground;
   color: $navColor;
   a {
-    color: $navColor
+    color: $navColor;
   }
 
   @include oGridRespondTo($until:L) {

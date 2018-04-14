@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const sassLoader = 'style-loader!css-loader?modules&importLoaders&localIdentName=[name]__[local]__[hash:base64:5]!sass-loader?sourceMap=true&sourceMapContents=true';
-
+const sassLoaderDemo = 'style-loader!css-loader!sass-loader?sourceMap=true&sourceMapContents=true';
 module.exports = {
   mode:'development',
   devtool: 'cheap-module-eval-source-map',//This option controls if and how source maps are generated.
@@ -22,16 +22,24 @@ module.exports = {
     rules: [{
       test:/\.jsx?$/,//匹配.js和.jsx结尾的文件
       include: [
-        path.resolve(__dirname, 'js')
+        path.join(__dirname, 'demo'),
+        path.join(__dirname, 'src', 'js')
       ],
       loaders: ['babel-loader']//Rule.loaders is an alias to Rule.use.
     }, {
       test: /\.scss$/,
       include: [
-        path.resolve(__dirname, 'css'),
+        path.join(__dirname, 'src', 'scss'),
         //path.resolve(__dirname, 'node_modules')
       ],
       loader: sassLoader
+    },{
+      test: /\.scss$/,
+      include: [
+        path.join(__dirname, 'demo'),
+        //path.resolve(__dirname, 'node_modules')
+      ],
+      loader: sassLoaderDemo
     }]
   },
 
