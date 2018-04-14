@@ -1,0 +1,39 @@
+@import '../node_modules/sass-mq/mq';
+
+$o-grid-mode: 'fluid' !default;
+$o-grid-fixed-layout: 'L' !default;
+
+/// Layouts
+///
+/// Each layout is calculated following a specific column width,
+/// in order to base breakpoints on the structure of the grid itself
+///
+/// @type Map
+$o-grid-layouts: (
+	S:  490px,  // column-width: 30px, inner width: 470px
+	M:  740px,  // column-width: 40px, inner width: 700px
+	L:  980px,  // column-width: 60px, inner width: 940px
+	XL: 1220px, // column-width: 80px, inner width: 1180px
+) !default;
+
+$_o-grid-scope: 'global';
+
+@mixin oGridRespondTo($from: false, $until: false) {
+	$grid-is-responsive: $o-grid-mode != 'fixed';
+
+	$original-scope: $_o-grid-scope;
+	$_o-grid-scope: 'respondTo' !global;
+
+	@include mq(
+		$from: $from,
+		$until: $until,
+		$responsive: $grid-is-responsive,
+		$breakpoints: $o-grid-layouts,
+		$static-breakpoint: $o-grid-fixed-layout
+	) {
+		@content;
+	}
+
+	// Restore previously set scope
+	$_o-grid-scope: $original-scope !global;
+}

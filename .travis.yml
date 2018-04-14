@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+- '7'
+install:
+- npm install
+- npm install rollup -g
+script:
+- npm test
+- npm run build
+deploy:
+  provider: npm
+  email: 1064431086@qq.com
+  api_key:
+    secure: XRFRs9Y6HpT6/Q3A+n+9a2hHTEAa+/7yhijtptrT7PFGOvAjrbN0nKaohXqDmRQvP9CqlJ7IeQY4z9HHRQRx9PA6IedDoSdjE1+9oIslCfskEFU7w7qFfsq3mHh2bhDIFHy+oP0qTg/2FJoRiwktGDiKDnCW5CHktX+T6lyvIRLjdh8bnwzRPhzEsBVLnx9xlCMXyESL6S3Ao0NP7iHyt2sJSzzEthj8KevJswHKcoH671LwVZIe0Qh2YB5EKrsJ4CDhNuv0RDeIjeF0Y4h7Ok3Qemiahpn6EC/u6StY+Xst0dwiesQ+lQJj9LjAahN4juE9zMSChF+enhwmzwc7T76YXoqK5V+ulJaAKMfrqfzBZgyLOIxobS21ypaK9D2AFVS6IdtcwyO5/vW7Xj8VrcLhv1nRp++9ZMFc7ZaBxP7qwy8cv0lNaibvhK+PKDb6gdc9Qqx/VnxXeiGZP0wbccBfZ87vjCTBNH2W/Qt7il9L2tZw0wBrDm3f9cFolOX9CES/2RLXIfqFiFr4IsVJ0XJc1QLT85nVCGIjuwtY9yVgBP9cSHMEfQpsVKCAplMBbDZFEXecF2TQNzbgYGJGvFGVMn8Ge7in4OBmz6cnmtEmgw+dPCjprPDTwX31d+/c+rS7L+2RGhLqqZIGp/tUq4j1/dWqd/Rcwh1m0RrAL3c=
+  on:
+    tags: true
+    branch: master
+    skip_cleanup: true
+
+ 
+
