@@ -58,6 +58,7 @@ class Nav extends React.Component {
         )
     }
     changeSelectedTopChannel(topOrder,e) {
+        console.log('changeSelectedTopChannel');
         if (this.props.dynamicnav) {
             this.setState({
                 selectedTopChannelOrder:topOrder,
@@ -67,7 +68,10 @@ class Nav extends React.Component {
     }
 
     changeSelectedSubChannelOnPushdownList(topOrder,subOrder,e) {
+        console.log('changeSelectedSubChannelOnPushdownList');
         if (this.props.dynamicnav) {
+            console.log('topOrder:', topOrder);
+            console.log('subOrder:', subOrder);
             this.setState({
                 selectedTopChannelOrder: topOrder,
                 selectedSubChannelOrder: subOrder
@@ -78,7 +82,7 @@ class Nav extends React.Component {
     changeSelectedSubChannelOnSubList(subOrder,e) {
         if (this.props.dynamicnav) {
             this.setState({
-                selectedSubChannelOrder:subOrder
+                selectedSubChannelOrder: subOrder
             })
         }
     }
@@ -86,6 +90,8 @@ class Nav extends React.Component {
         const listStyle = classnames('list','list-top');
         const {channels, dynamicnav} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
+        console.log('selectedTopChannelOrder:', selectedTopChannelOrder);
+        console.log('selectedSubChannelOrder:',selectedSubChannelOrder);
         const topChannels = channels;
         const topItems = topChannels.map((topChannel, i) => {
             const topItemStyle = classnames({
@@ -152,7 +158,7 @@ class Nav extends React.Component {
         const listStyle = classnames('list', 'list-sub');
         const {channels, dynamicnav} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
-        
+        //console.log('selectedSubChannelOrder:', selectedSubChannelOrder);
         const selectedTopChannel = channels.filter(channel => (
             channel.order === selectedTopChannelOrder
         ))[0];
@@ -166,12 +172,12 @@ class Nav extends React.Component {
                 const subItemStyle = classnames({
                     item: true,
                     'item-sub':true,
-                    'item-sub--selected' : this.state.selectedSubChannelOrder === subOrder,
+                    'item-sub--selected' : selectedSubChannelOrder === subOrder,
                     'item-sub--dynamic': dynamicnav
                 })
                 return (
                     <li styleName={subItemStyle} key={subOrder} order={subOrder} 
-                    //onClick={this.changeSelectedSubChannelOnSubList(this, subOrder)}
+                    onClick={this.changeSelectedSubChannelOnSubList.bind(this, subOrder)}
                     >
                        {
                             dynamicnav ? 
