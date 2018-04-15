@@ -170,7 +170,9 @@ $navColor:#fff;//header文字颜色
 		}
 }
 .item-sub--selected {
-  background: #27757b;
+  @include oGridRespondTo(L) {
+    background: #27757b;
+  }
 }
 .pushdown-list {
   display: none;
