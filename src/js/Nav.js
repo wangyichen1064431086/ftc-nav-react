@@ -14,25 +14,27 @@ class Nav extends React.Component {
     static propTypes = {
         channels: PropTypes.arrayOf(
             PropTypes.shape({
-                name: PropTypes.string,
-                order: PropTypes.number,
+                name: PropTypes.string.isRequired,
+                order: PropTypes.number.isRequired,
                 url: PropTypes.string,
                 subs: PropTypes.arrayOf(
                     PropTypes.shape({
-                        name: PropTypes.string,
-                        order: PropTypes.number,
+                        name: PropTypes.string.isRequired,
+                        order: PropTypes.number.isRequired,
                         url: PropTypes.string
                     })
                 )
             })
         ),
+        dynamicnav: PropTypes.bool,
         defaultSelectedTopChannelOrder: PropTypes.number,
         defaultSelectedSubChannelOrder: PropTypes.number
     }
     
     static defaultProps = {
         defaultSelectedTopChannelOrder: 0,
-        defaultSelectedSubChannelOrder: -1
+        defaultSelectedSubChannelOrder: -1,
+        dynamicnav: false
     }
 
     constructor(props) {
@@ -50,39 +52,86 @@ class Nav extends React.Component {
         }))
     }
     renderHamburg() {
+        const type = this.state.showMobileNav ? 'close' : 'open';
         return (
-            <Hamburg clickHamburg={this.clickHamburg} />
+            <Hamburg clickHamburg={this.clickHamburg} type = {type}/>
         )
+    }
+    changeSelectedTopChannel(topOrder,e) {
+        if (this.props.dynamicnav) {
+            this.setState({
+                selectedTopChannelOrder:topOrder,
+                selectedSubChannelOrder:-1
+            })
+        }
+    }
+
+    changeSelectedSubChannelOnPushdownList(topOrder,subOrder,e) {
+        if (this.props.dynamicnav) {
+            this.setState({
+                selectedTopChannelOrder: topOrder,
+                selectedSubChannelOrder: subOrder
+            });
+        }
+    }
+
+    changeSelectedSubChannelOnSubList(subOrder,e) {
+        if (this.props.dynamicnav) {
+            this.setState({
+                selectedSubChannelOrder:subOrder
+            })
+        }
     }
     renderTopList() {
         const listStyle = classnames('list','list-top');
-        const {channels} = this.props;
+        const {channels, dynamicnav} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
         const topChannels = channels;
         const topItems = topChannels.map((topChannel, i) => {
             const topItemStyle = classnames({
                 'item': true,
                 'item-top': true,
-                'item-top--selected': topChannel.order === this.state.selectedTopChannelOrder
+                'item-top--selected': topChannel.order === this.state.selectedTopChannelOrder,
+                'item-top--dynamic': dynamicnav
             });
+            const topOrder = topChannel.order;
 
             const pushdownChannels = topChannel.subs;
             let pushdownItems;
             if (pushdownChannels && pushdownChannels.length > 0) {
-                pushdownItems = pushdownChannels.map((pushdownChannel, i) => (
-                  <li styleName='pushdown-item' key={pushdownChannel.order}>
-                    <a href={pushdownChannel.url}>
-                        {pushdownChannel.name}
-                    </a>
+                pushdownItems = pushdownChannels.map((pushdownChannel, i) => {
+                const pushdownItemStyle = classnames({
+                    'pushdown-item': true,
+                    'pushdown-item--dynamic': dynamicnav
+                });
+                const subOrder = pushdownChannel.order;
+                return (
+                  <li styleName={pushdownItemStyle} key={subOrder} order={subOrder} onClick={this.changeSelectedSubChannelOnPushdownList.bind(this, topOrder,subOrder)}>
+                    {
+                        dynamicnav ? 
+                        pushdownChannel.name :
+                        (
+                          <a href={pushdownChannel.url}>
+                            {pushdownChannel.name}
+                          </a>
+                        )
+                        
+                    }
                   </li>
-                ))
+                )})
             }
 
             return (
-                <li styleName={topItemStyle} key={topChannel.order}>
-                    <a href={topChannel.url}>
-                        {topChannel.name}
-                    </a>
+                <li styleName={topItemStyle} key={topOrder} order={topOrder} onClick={this.changeSelectedTopChannel.bind(this, topOrder)}>
+                    {
+                        dynamicnav ? 
+                        topChannel.name :
+                        (
+                            <a href={topChannel.url}>
+                                {topChannel.name}
+                            </a>
+                        )
+                    }
                     {  (pushdownChannels && pushdownChannels.length > 0) &&
                         <ul styleName="pushdown-list">
                             {pushdownItems}
@@ -101,40 +150,61 @@ class Nav extends React.Component {
 
     renderSubList() {
         const listStyle = classnames('list', 'list-sub');
-        const {channels} = this.props;
+        const {channels, dynamicnav} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
-       
-        const subChannels = channels.filter(channel => (
+        
+        const selectedTopChannel = channels.filter(channel => (
             channel.order === selectedTopChannelOrder
-        ))[0].subs;
-        const subItems = subChannels.map(subChannel => {
-            const subItemStyle = classnames({
-                item: true,
-                'item-sub':true,
-                'item-sub--selected' : selectedSubChannelOrder === subChannel.order
-            })
+        ))[0];
+        if (selectedTopChannel && selectedTopChannel.subs) {
+            const subChannels = channels.filter(channel => (
+                channel.order === selectedTopChannelOrder
+            ))[0].subs;
+            
+            const subItems = subChannels.map(subChannel => {
+                const subOrder = subChannel.order;
+                const subItemStyle = classnames({
+                    item: true,
+                    'item-sub':true,
+                    'item-sub--selected' : this.state.selectedSubChannelOrder === subOrder,
+                    'item-sub--dynamic': dynamicnav
+                })
+                return (
+                    <li styleName={subItemStyle} key={subOrder} order={subOrder} 
+                    //onClick={this.changeSelectedSubChannelOnSubList(this, subOrder)}
+                    >
+                       {
+                            dynamicnav ? 
+                            subChannel.name :
+                            (
+                                <a href={subChannel.url}>
+                                {subChannel.name}
+                                </a>
+                            )
+                        }
+                    </li>
+                )
+            });
             return (
-                <li styleName={subItemStyle} key={subChannel.order}>
-                   <a href={subChannel.url}>
-                    {subChannel.name}
-                    </a>
-                </li>
+                <ul styleName={listStyle}>
+                    {subItems}
+                </ul>
             )
-        })
-        return (
-            <ul styleName={listStyle}>
-                {subItems}
-            </ul>
-        )
+        }
+        return null;
+       
+       
     }
 
     render() {
+        const navStyle = classnames({
+            nav: true,
+            'nav--mobileshow': this.state.showMobileNav
+        })
         return (
           <div>
-            <div>
-                {this.renderHamburg()}
-            </div>
-            <nav role="nav" aria-label="main-navigation" styleName="nav">
+            {this.renderHamburg()}
+            <nav role="nav" aria-label="main-navigation" styleName={navStyle}>
                 {this.renderTopList()}
                 {this.renderSubList()}
             </nav>

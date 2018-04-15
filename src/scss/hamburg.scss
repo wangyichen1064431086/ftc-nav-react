@@ -6,9 +6,11 @@
   }
   width:44px;
   height:44px;
+  //margin-left:10px;
   background-size: 20px 20px;
   background-repeat: no-repeat;
-  background-position: 0 center;
+  background-position: center center;
+  background-color: #333;
 }
 .btn--open {
   background-image: url(http://static.ftchinese.com/ftc-icons/svg/white/hamburger-white.svg);

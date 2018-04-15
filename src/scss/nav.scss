@@ -13,7 +13,13 @@ $navColor:#fff;//header文字颜色
   }
 
   @include oGridRespondTo($until:L) {
-    //display: none;
+    display: none;
+  }
+}
+
+.nav--mobileshow {
+  @include oGridRespondTo($until:L) {
+    display: block;
   }
 }
 
@@ -94,15 +100,14 @@ $navColor:#fff;//header文字颜色
       background:#505050;
     }
   }
-  
-  a {
+  &.item-top--dynamic, a {
     height: 44px;
     padding: 0 15px;
     line-height: 44px;
   }
   @include oGridRespondTo($until:L) {//For mobile
     display:block;
-    a {
+    &.item-top--dynamic, a {
       width:100%;
       height:100%;
       padding: 0;
@@ -125,12 +130,13 @@ $navColor:#fff;//header文字颜色
     }
   }
 }
+
 .item-top--selected {
   background:#505050;
 
   @include oGridRespondTo($until:L) {
     background: #fff1e0;
-    a {
+    &.item-top--dynamic, a {
       color: #333;
       &::after {
         background-image:url(http://static.ftchinese.com/ftc-icons/svg/arrow-right.svg);
@@ -145,13 +151,13 @@ $navColor:#fff;//header文字颜色
 				background: #27757b;
 			}
 		}
-		a {
+		&.item-sub--dynamic, a {
 			height: 30px;
 			padding: 0 6px;
 			line-height: 30px;
 		}
 		@include oGridRespondTo($until:L) {
-			a {
+			&.item-sub--dynamic, a {
 				color: #333; /*NOTE:当a的text-decoration为None时，默认是白色 ？？*/
 				font-size:16px;
 				font-weight: 400;
@@ -188,7 +194,7 @@ $navColor:#fff;//header文字颜色
 		&:hover,&:active {
 			background: #27757b;
 		}
-		a {
+		 a {
 			padding: 0 25px 0 15px;
 			height: 30px;
 			line-height: 30px;
@@ -196,7 +202,13 @@ $navColor:#fff;//header文字颜色
 			text-decoration: none;
 			white-space: nowrap;/*NOTE：否则a会换行*/
 			cursor: pointer;
-		}
+    }
+    &.pushdown-item--dynamic {
+      padding: 0 25px 0 15px;
+			height: 30px;
+			line-height: 30px;
+			cursor: pointer;
+    }
 }
 
 .item-top:not(.item-top--selected):hover>.pushdown-list{

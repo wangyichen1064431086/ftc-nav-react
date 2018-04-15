@@ -10,8 +10,7 @@ import app from './app.scss';
 class App extends React.Component {
   render() {
     return (
-      <Nav channels={channelData} />
-
+      <Nav channels={channelData} dynamicnav={true} />
     )
   }
 }

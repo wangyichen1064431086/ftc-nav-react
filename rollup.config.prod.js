@@ -5,7 +5,7 @@ import replace from 'rollup-plugin-replace';
 import postcss from 'rollup-plugin-postcss';
 
 export default {
-  input: './js/index.js',
+  input: './src/js/index.js',
   output:[
     {
       name:'FtcNav',
@@ -58,9 +58,11 @@ export default {
       main:true
     }),
     commonjs({
+      /*
       namedExports: {
         'node_modules/immutable/dist/immutable.js':['Seq']
       }
+      */
     })
   ],
 
