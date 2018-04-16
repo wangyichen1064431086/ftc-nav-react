@@ -58,7 +58,6 @@ class Nav extends React.Component {
         )
     }
     changeSelectedTopChannel(topOrder,e) {
-        console.log('changeSelectedTopChannel');
         if (this.props.dynamicnav) {
             this.setState({
                 selectedTopChannelOrder:topOrder,
@@ -68,11 +67,8 @@ class Nav extends React.Component {
     }
 
     changeSelectedSubChannelOnPushdownList(topOrder,subOrder,e) {
-        console.log('changeSelectedSubChannelOnPushdownList');
         e.stopPropagation();//NOTE:重要!如果不阻止冒泡，则还会调用外部topItem上绑定的onClick事件changeSelectedTopChannel，则会把selectedSubChannelOrder又置为-1
         if (this.props.dynamicnav) {
-            console.log('topOrder:', topOrder);
-            console.log('subOrder:', subOrder);
             this.setState({
                 selectedTopChannelOrder: topOrder,
                 selectedSubChannelOrder: subOrder
@@ -88,12 +84,9 @@ class Nav extends React.Component {
         }
     }
     renderTopList() {
-        console.log('renderTopList');
         const listStyle = classnames('list','list-top');
         const {channels, dynamicnav} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
-        console.log('selectedTopChannelOrder:', selectedTopChannelOrder);
-        console.log('selectedSubChannelOrder:',selectedSubChannelOrder);
         const topChannels = channels;
         const topItems = topChannels.map((topChannel, i) => {
             const topItemStyle = classnames({
@@ -157,11 +150,9 @@ class Nav extends React.Component {
     }
 
     renderSubList() {
-        console.log('renderSubList');
         const listStyle = classnames('list', 'list-sub');
         const {channels, dynamicnav} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
-        //console.log('selectedSubChannelOrder:', selectedSubChannelOrder);
         const selectedTopChannel = channels.filter(channel => (
             channel.order === selectedTopChannelOrder
         ))[0];
@@ -211,7 +202,7 @@ class Nav extends React.Component {
         return (
           <div>
             {this.renderHamburg()}
-            <nav role="nav" aria-label="main-navigation" styleName={navStyle}>
+            <nav role="navigation" aria-label="main-navigation" styleName={navStyle}>
                 {this.renderTopList()}
                 {this.renderSubList()}
             </nav>
