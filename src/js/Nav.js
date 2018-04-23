@@ -34,7 +34,7 @@ class Nav extends React.Component {
     static defaultProps = {
         defaultSelectedTopChannelOrder: 0,
         defaultSelectedSubChannelOrder: -1,
-        dynamicnav: false
+        dynamicnav: true
     }
 
     constructor(props) {

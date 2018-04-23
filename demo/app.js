@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import Nav from '../build/index.es.js';
 
 import { channelData } from './data.js';
-import app from './app.scss';
 
 class App extends React.Component {
   render() {
