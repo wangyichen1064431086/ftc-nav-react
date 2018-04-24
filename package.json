@@ -13,22 +13,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wangyichen1064431086/ftc-table-react.git"
+    "url": "git+https://github.com/wangyichen1064431086/ftc-nav-react.git"
   },
   "files": [
     "build"
   ],
   "keywords": [
-    "tabs",
+    "nav",
     "react",
-    "table"
+    "ftchinese",
+    "channels"
   ],
   "author": "wangyichen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wangyichen1064431086/ftc-table-react/issues"
+    "url": "https://github.com/wangyichen1064431086/ftc-nav-react/issues"
   },
-  "homepage": "https://github.com/wangyichen1064431086/ftc-table-react#readme",
+  "homepage": "https://github.com/wangyichen1064431086/ftc-nav-react#readme",
   "dependencies": {
     "classnames": "^2.2.5",
     "extract-text-webpack-plugin": "^3.0.2",
