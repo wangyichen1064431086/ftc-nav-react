@@ -2,7 +2,10 @@
 //colors
 $navBackground:#333;//header背景色
 $navColor:#fff;//header文字颜色
-
+html,body {
+  margin: 0;
+  padding: 0;
+}
 .nav {
   font-family: Microsoft Yahei,SimSun,sans-serif;
   width:100%;
