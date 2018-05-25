@@ -28,13 +28,15 @@ class Nav extends React.Component {
         ),
         dynamicnav: PropTypes.bool,
         defaultSelectedTopChannelOrder: PropTypes.number,
-        defaultSelectedSubChannelOrder: PropTypes.number
+        defaultSelectedSubChannelOrder: PropTypes.number,
+        callbackFunc: PropTypes.func//回调函数，需要从父元素传递进来，可有可无，用于向父元素传递选中的topChannelOrder和SubChannelOrder
     }
     
     static defaultProps = {
         defaultSelectedTopChannelOrder: 0,
         defaultSelectedSubChannelOrder: -1,
-        dynamicnav: true
+        dynamicnav: true,
+        callbackFunc: () => {}
     }
 
     constructor(props) {
@@ -42,9 +44,61 @@ class Nav extends React.Component {
         this.state = {
             selectedTopChannelOrder: this.props.defaultSelectedTopChannelOrder,
             selectedSubChannelOrder: this.props.defaultSelectedSubChannelOrder,
+            selectedTopChannelName:"",
+            selectedSubChannelName:"",
             showMobileNav: false
         }
-        this.clickHamburg = this.clickHamburg.bind(this)
+        
+        this.clickHamburg = this.clickHamburg.bind(this);
+        this.setSelectedChannelNameByOrder = this.setSelectedChannelNameByOrder.bind(this);
+        this.callCbFunc = this.callCbFunc.bind(this);
+    }
+    componentWillMount() {
+       this.setSelectedChannelNameByOrder();
+    }
+    componentDidMount() {
+      this.callCbFunc();
+    }
+    // componentDidUpdate() {//其可以有参数prevProps, prevState
+    //     this.setSelectedChannelNameByOrder();
+    //     this.callCbFunc();
+    // } //会造成setState的循环调用，待查清楚原因
+    setSelectedChannelNameByOrder() {
+        const {channels} = this.props;
+        const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
+       
+        const selectedTopChannel = channels.filter(channel => (
+            channel.order === selectedTopChannelOrder
+        ))[0];
+
+        
+        const selectedTopChannelName = selectedTopChannel.name;
+
+        const subChannels = selectedTopChannel.subs;
+
+        const selectedSubChannel = subChannels.filter(subChannel => (
+            subChannel.order === selectedSubChannelOrder
+        ))[0];//不一定存在
+        const selectedSubChannelName = selectedSubChannel ? selectedSubChannel.name : '';
+        this.setState({
+            selectedTopChannelName: selectedTopChannelName,
+            selectedSubChannelName: selectedSubChannelName
+        });
+    }
+    callCbFunc() {
+        const {selectedTopChannelOrder, selectedSubChannelOrder, selectedTopChannelName, selectedSubChannelName} = this.state;
+        this.props.callbackFunc({
+            selectedTopChannelOrder,
+            selectedSubChannelOrder,
+            selectedTopChannelName, 
+            selectedSubChannelName
+        });
+        console.log({
+            selectedTopChannelOrder,
+            selectedSubChannelOrder,
+            selectedTopChannelName, 
+            selectedSubChannelName
+        });
     }
     clickHamburg() {
         this.setState(prevState => ({
