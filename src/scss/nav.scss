@@ -154,7 +154,7 @@ html,body {
 			&:hover,&:active {
 				background: #27757b;
 			}
-		}
+    }
 		&.item-sub--dynamic, a {
 			height: 30px;
 			padding: 0 6px;
@@ -172,6 +172,12 @@ html,body {
 				
 			}
 		}
+}
+.item-first-sub {
+  display: none;
+  @include oGridRespondTo($until:L) {
+    display: block;
+  }
 }
 .item-sub--selected {
   @include oGridRespondTo(L) {

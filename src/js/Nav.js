@@ -48,18 +48,30 @@ class Nav extends React.Component {
             selectedSubChannelName: '',
             selectedTopChannelUrl: '',
             selectedSubChannelUrl: '',
-            showMobileNav: false
+            showMobileNav: false,
+            isMobile: false
         }
         
         this.clickHamburg = this.clickHamburg.bind(this);
         this.setSelectedChannelNameByOrder = this.setSelectedChannelNameByOrder.bind(this);
+        //this.preventGotoHrefWhenMobile = this.preventGotoHrefWhenMobile.bind(this);
         this.callCbFunc = this.callCbFunc.bind(this);
     }
     componentWillMount() {
        this.setSelectedChannelNameByOrder();
+       this.detectIfTheDeviceIsMobile();
     }
     componentDidMount() {
       this.callCbFunc();
+    }
+
+    detectIfTheDeviceIsMobile() {
+        const deviceWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        if (deviceWidth < 980 ) {
+            this.setState({
+                isMobile: true
+            });
+        } //oGrid的各宽度分界点没有包括上边距
     }
     // componentDidUpdate() {//其可以有参数prevProps, prevState
     //     this.setSelectedChannelNameByOrder();
@@ -143,6 +155,21 @@ class Nav extends React.Component {
             })
         }
     }
+
+    // preventGotoHrefWhenMobile(e) {
+    //     if (this.state.isMobile) {
+    //         e.preventDefault();//如果在mobile的情况下，点击一级目录不可以发生导航
+    //     }
+    // }
+    handleClickTopChannelA(topOrder, e) {
+        if (this.state.isMobile) {
+            e.preventDefault();//如果在mobile的情况下，点击一级目录不可以发生导航
+            this.setState({
+                selectedTopChannelOrder:topOrder,
+                selectedSubChannelOrder:-1
+            })
+        }
+    }
     renderTopList() {
         const listStyle = classnames('list','list-top');
         const {channels, dynamicnav} = this.props;
@@ -181,14 +208,13 @@ class Nav extends React.Component {
                   </li>
                 )})
             }
-
             return (
                 <li styleName={topItemStyle} key={topOrder} order={topOrder} onClick={this.changeSelectedTopChannel.bind(this, topOrder)}>
                     {
                         dynamicnav ? 
                         topChannel.name :
                         (
-                            <a href={topChannel.url}>
+                            <a href={topChannel.url} onClick={this.handleClickTopChannelA.bind(this, topOrder)}>
                                 {topChannel.name}
                             </a>
                         )
@@ -216,8 +242,15 @@ class Nav extends React.Component {
         const selectedTopChannel = channels.filter(channel => (
             channel.order === selectedTopChannelOrder
         ))[0];
-        if (selectedTopChannel && selectedTopChannel.subs) {
-            const subChannels = selectedTopChannel.subs;
+        if (selectedTopChannel) {
+            const subChannels = selectedTopChannel.subs ? selectedTopChannel.subs : [];
+            if(subChannels.length === 0 ||subChannels[0].order !== 100) {
+                subChannels.unshift({
+                    name:'频道首页',
+                    url:selectedTopChannel.url,
+                    order:100
+                });
+            }
             
             const subItems = subChannels.map(subChannel => {
                 const subOrder = subChannel.order;
@@ -225,7 +258,8 @@ class Nav extends React.Component {
                     item: true,
                     'item-sub':true,
                     'item-sub--selected' : selectedSubChannelOrder === subOrder,
-                    'item-sub--dynamic': dynamicnav
+                    'item-sub--dynamic': dynamicnav,
+                    'item-first-sub': subOrder === 100
                 })
                 return (
                     <li styleName={subItemStyle} key={subOrder} order={subOrder} 
