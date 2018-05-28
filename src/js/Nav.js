@@ -235,7 +235,7 @@ class Nav extends React.Component {
         )
     }
 
-    renderSubList() {
+    renderSubList() { //为什么第一次打开会渲染两次renderSubList()??
         const listStyle = classnames('list', 'list-sub');
         const {channels, dynamicnav} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
