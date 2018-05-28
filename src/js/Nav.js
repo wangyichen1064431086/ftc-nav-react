@@ -44,8 +44,10 @@ class Nav extends React.Component {
         this.state = {
             selectedTopChannelOrder: this.props.defaultSelectedTopChannelOrder,
             selectedSubChannelOrder: this.props.defaultSelectedSubChannelOrder,
-            selectedTopChannelName:"",
-            selectedSubChannelName:"",
+            selectedTopChannelName: '',
+            selectedSubChannelName: '',
+            selectedTopChannelUrl: '',
+            selectedSubChannelUrl: '',
             showMobileNav: false
         }
         
@@ -73,6 +75,7 @@ class Nav extends React.Component {
 
         
         const selectedTopChannelName = selectedTopChannel.name;
+        const selectedTopChannelUrl = selectedTopChannel.url;
 
         const subChannels = selectedTopChannel.subs;
 
@@ -80,9 +83,12 @@ class Nav extends React.Component {
             subChannel.order === selectedSubChannelOrder
         ))[0];//不一定存在
         const selectedSubChannelName = selectedSubChannel ? selectedSubChannel.name : '';
+        const selectedSubChannelUrl = selectedSubChannel ? selectedSubChannel.url : '';
         this.setState({
             selectedTopChannelName: selectedTopChannelName,
-            selectedSubChannelName: selectedSubChannelName
+            selectedTopChannelUrl: selectedTopChannelUrl,
+            selectedSubChannelName: selectedSubChannelName,
+            selectedSubChannelUrl: selectedSubChannelUrl
         });
     }
     callCbFunc() {
@@ -93,12 +99,12 @@ class Nav extends React.Component {
             selectedTopChannelName, 
             selectedSubChannelName
         });
-        console.log({
-            selectedTopChannelOrder,
-            selectedSubChannelOrder,
-            selectedTopChannelName, 
-            selectedSubChannelName
-        });
+        // console.log({
+        //     selectedTopChannelOrder,
+        //     selectedSubChannelOrder,
+        //     selectedTopChannelName, 
+        //     selectedSubChannelName
+        // });
     }
     clickHamburg() {
         this.setState(prevState => ({
@@ -249,7 +255,7 @@ class Nav extends React.Component {
     }
 
     renderSimpleNav() {
-        const { selectedTopChannelOrder, selectedTopChannelName, selectedSubChannelName } = this.state;
+        const { selectedTopChannelOrder, selectedTopChannelName, selectedTopChannelUrl, selectedSubChannelName, selectedSubChannelUrl } = this.state;
         if (selectedTopChannelOrder === 0) { //只有在不为首页的情况下再显示
             return null;
         }
@@ -258,14 +264,14 @@ class Nav extends React.Component {
             <nav styleName="simple" role="navigation" aria-label="simple-navigation">
                 <ul styleName="simple-list">
                     <li styleName="simple-item">
-                        <a>
+                        <a href={selectedTopChannelUrl}>
                             { selectedTopChannelName }
                         </a>
                     </li>
                     {
                         selectedSubChannelName && 
                         <li styleName="simple-item">
-                            <a>
+                            <a href={selectedSubChannelUrl}>
                                 { selectedSubChannelName }
                             </a>
                         </li>

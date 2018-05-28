@@ -234,7 +234,6 @@ html,body {
   min-width: 240px;
   padding: 5px 10px 10px;
   height: 22px;
-  color: $selectedColor;
   @include oGridRespondTo(L) {
     display: none;
   }
@@ -257,7 +256,7 @@ html,body {
     text-decoration: none;
     display: inline-block;
     vertical-align: middle;
-
+    color: $selectedColor; //NOTE: a的color要写在a本身上，否则color: -webkit-link;这种属性值会覆盖继承来的color
   }
 }
 .simple-item:nth-child(2) {
