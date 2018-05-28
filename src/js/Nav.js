@@ -248,6 +248,33 @@ class Nav extends React.Component {
        
     }
 
+    renderSimpleNav() {
+        const { selectedTopChannelOrder, selectedTopChannelName, selectedSubChannelName } = this.state;
+        if (selectedTopChannelOrder === 0) { //只有在不为首页的情况下再显示
+            return null;
+        }
+        return (
+            selectedTopChannelName &&
+            <nav styleName="simple" role="navigation" aria-label="simple-navigation">
+                <ul styleName="simple-list">
+                    <li styleName="simple-item">
+                        <a>
+                            { selectedTopChannelName }
+                        </a>
+                    </li>
+                    {
+                        selectedSubChannelName && 
+                        <li styleName="simple-item">
+                            <a>
+                                { selectedSubChannelName }
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        )
+    }
+
     render() {
         const navStyle = classnames({
             nav: true,
@@ -260,6 +287,8 @@ class Nav extends React.Component {
                 {this.renderTopList()}
                 {this.renderSubList()}
             </nav>
+            {this.renderSimpleNav()} 
+
           </div>
         );
         

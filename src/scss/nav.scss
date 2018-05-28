@@ -2,6 +2,7 @@
 //colors
 $navBackground:#333;//header背景色
 $navColor:#fff;//header文字颜色
+$selectedColor: #27757b;//选中子频道时子频道的背景色，及mobile导航simple的文字颜色
 html,body {
   margin: 0;
   padding: 0;
@@ -70,7 +71,7 @@ html,body {
 }
 
 .item {
-  display: inline-block;
+    display: inline-block;
 		list-style-type: none;
 		margin: 0;
 		padding: 0;
@@ -225,4 +226,50 @@ html,body {
 
 .list--right {
   float:right;
+}
+
+.simple {
+  font-family: Microsoft Yahei,SimSun,sans-serif;
+  width: 100%;
+  min-width: 240px;
+  padding: 5px 10px 10px;
+  height: 22px;
+  color: $selectedColor;
+  @include oGridRespondTo(L) {
+    display: none;
+  }
+}
+.simple-list {
+  margin:0px;
+  padding: 0px;
+  // font-size: 0;
+  list-style-position: outside;
+  list-style-type: none;
+  height: 100%;
+}
+.simple-item {
+  display: inline-block;
+  font-size: 16.8px;
+  height: 100%;
+  padding: 0 5px 0 0;
+
+  a {
+    text-decoration: none;
+    display: inline-block;
+    vertical-align: middle;
+
+  }
+}
+.simple-item:nth-child(2) {
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 15px;
+    height: 100%;
+    background-image: url(http://s.ftimg.net/img/svg/arrow-right.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 15px 15px;
+    vertical-align: middle;
+  }
 }

@@ -10,7 +10,7 @@ import { channelData } from './data.js';
 class App extends React.Component {
   render() {
     return (
-      <Nav channels={channelData} dynamicnav={true} />
+      <Nav channels={channelData} dynamicnav={false} defaultSelectedTopChannelOrder={1} defaultSelectedSubChannelOrder={1}/>
     )
   }
 }
