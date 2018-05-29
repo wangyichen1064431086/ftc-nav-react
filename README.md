@@ -76,7 +76,7 @@ const channelData = [
 class App extends React.Component {
   render() {
     return (
-      <Nav channels={channelData} dynamicnav={false} />
+      <Nav channels={channelData} dynamicnav={true} />
     )
   }
 }
