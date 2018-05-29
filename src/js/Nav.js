@@ -35,7 +35,7 @@ class Nav extends React.Component {
     static defaultProps = {
         defaultSelectedTopChannelOrder: 0,
         defaultSelectedSubChannelOrder: -1,
-        dynamicnav: true,
+        dynamicnav: false,
         callbackFunc: () => {}
     }
 
@@ -53,19 +53,21 @@ class Nav extends React.Component {
         }
         
         this.clickHamburg = this.clickHamburg.bind(this);
-        this.setSelectedChannelNameByOrder = this.setSelectedChannelNameByOrder.bind(this);
+        this.initialSelectedChannelInfoByOrder = this.initialSelectedChannelInfoByOrder.bind(this);
         //this.preventGotoHrefWhenMobile = this.preventGotoHrefWhenMobile.bind(this);
         this.callCbFunc = this.callCbFunc.bind(this);
+        this.clickTopChannelOnSimpleNav = this.clickTopChannelOnSimpleNav.bind(this);
     }
     componentWillMount() {
-       this.setSelectedChannelNameByOrder();
-       this.detectIfTheDeviceIsMobile();
+       this.initialSelectedChannelInfoByOrder();
+       this.detectIfTheDeviceIsMobile(); //NOTE:从PC切换到Moblie时要再刷新一次，不然不会重新检测设备
     }
     componentDidMount() {
       this.callCbFunc();
     }
 
     detectIfTheDeviceIsMobile() {
+        console.log('exect detectIfTheDeviceIsMobile');
         const deviceWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
         if (deviceWidth < 980 ) {
             this.setState({
@@ -77,7 +79,7 @@ class Nav extends React.Component {
     //     this.setSelectedChannelNameByOrder();
     //     this.callCbFunc();
     // } //会造成setState的循环调用，待查清楚原因
-    setSelectedChannelNameByOrder() {
+    initialSelectedChannelInfoByOrder() {
         const {channels} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
        
@@ -111,12 +113,6 @@ class Nav extends React.Component {
             selectedTopChannelName, 
             selectedSubChannelName
         });
-        // console.log({
-        //     selectedTopChannelOrder,
-        //     selectedSubChannelOrder,
-        //     selectedTopChannelName, 
-        //     selectedSubChannelName
-        // });
     }
     clickHamburg() {
         this.setState(prevState => ({
@@ -129,47 +125,56 @@ class Nav extends React.Component {
             <Hamburg clickHamburg={this.clickHamburg} type = {type}/>
         )
     }
-    changeSelectedTopChannel(topOrder,e) {
-        if (this.props.dynamicnav) {
-            this.setState({
-                selectedTopChannelOrder:topOrder,
-                selectedSubChannelOrder:-1
-            })
+    clickTopChannelOnTopListWhenDynamic(topOrder,e) { //动态情况下，点击topChannel发生的事情
+        this.setState({
+            selectedTopChannelOrder:topOrder,
+            selectedSubChannelOrder:-1
+        });
+    }
+
+    clickSubChannelOnPushdownListWhenDynamic(topOrder,subOrder,e) { //动态情况下，点击下拉菜单的subChannel发生的事情
+        e.stopPropagation();//NOTE:重要!如果不阻止冒泡，则还会调用外部topItem上绑定的onClick事件clickTopChannelOnTopListWhenDynamic，则会把selectedSubChannelOrder又置为-1
+        this.setState({
+            selectedTopChannelOrder: topOrder,
+            selectedSubChannelOrder: subOrder
+        });
+    }
+
+    clickSubChannelOnSubListWhenDydnamic(subOrder, subName, subUrl, topOrder, topName, topUrl, e) { //动态情况下，点击二级菜单的subChannel发生的事情
+        //MARK:也要传递topChannel相关信息，因为这里点击的可能是第一个subChannel，其是频道首页，也就是会改变topChannel相关信息。
+        this.setState({
+            selectedSubChannelOrder: subOrder,
+            selectedSubChannelName: subName,
+            selectedSubChannelUrl: subUrl,
+            selectedTopChannelOrder: topOrder,
+            selectedTopChannelName: topName,
+            selectedTopChannelUrl: topUrl
+        });
+        if (this.state.isMobile) {
+            this.setState(prevState => ({
+                showMobileNav:!prevState.showMobileNav
+            }));
         }
     }
 
-    changeSelectedSubChannelOnPushdownList(topOrder,subOrder,e) {
-        e.stopPropagation();//NOTE:重要!如果不阻止冒泡，则还会调用外部topItem上绑定的onClick事件changeSelectedTopChannel，则会把selectedSubChannelOrder又置为-1
-        if (this.props.dynamicnav) {
-            this.setState({
-                selectedTopChannelOrder: topOrder,
-                selectedSubChannelOrder: subOrder
-            });
-        }
-    }
-
-    changeSelectedSubChannelOnSubList(subOrder,e) {
-        if (this.props.dynamicnav) {
-            this.setState({
-                selectedSubChannelOrder: subOrder
-            })
-        }
-    }
-
-    // preventGotoHrefWhenMobile(e) {
-    //     if (this.state.isMobile) {
-    //         e.preventDefault();//如果在mobile的情况下，点击一级目录不可以发生导航
-    //     }
-    // }
-    handleClickTopChannelA(topOrder, e) {
+    clickTopChannelOnTopListWhenStatic(topOrder, e) { //静态情况下点击一级菜单发生的情况：此时点击的是a
         if (this.state.isMobile) {
             e.preventDefault();//如果在mobile的情况下，点击一级目录不可以发生导航
             this.setState({
                 selectedTopChannelOrder:topOrder,
                 selectedSubChannelOrder:-1
-            })
+            });
         }
     }
+
+    clickTopChannelOnSimpleNav() { //动态情况下，点击simpleNav中一级目录的情况
+        this.setState({
+            selectedSubChannelOrder: -1,
+            selectedSubChannelName: '',
+            selectedSubChannelUrl: ''
+        });//去掉二级目录导航
+    }
+
     renderTopList() {
         const listStyle = classnames('list','list-top');
         const {channels, dynamicnav} = this.props;
@@ -194,7 +199,7 @@ class Nav extends React.Component {
                 });
                 const subOrder = pushdownChannel.order;
                 return (
-                  <li styleName={pushdownItemStyle} key={subOrder} order={subOrder} onClick={this.changeSelectedSubChannelOnPushdownList.bind(this, topOrder,subOrder)}>
+                  <li styleName={pushdownItemStyle} key={subOrder} order={subOrder} onClick={this.clickSubChannelOnPushdownListWhenDynamic.bind(this, topOrder,subOrder)}>
                     {
                         dynamicnav ? 
                         pushdownChannel.name :
@@ -202,19 +207,18 @@ class Nav extends React.Component {
                           <a href={pushdownChannel.url}>
                             {pushdownChannel.name}
                           </a>
-                        )
-                        
+                        )      
                     }
                   </li>
-                )})
+                )});
             }
             return (
-                <li styleName={topItemStyle} key={topOrder} order={topOrder} onClick={this.changeSelectedTopChannel.bind(this, topOrder)}>
+                <li styleName={topItemStyle} key={topOrder} order={topOrder} onClick={dynamicnav ? this.clickTopChannelOnTopListWhenDynamic.bind(this, topOrder) : null}>
                     {
                         dynamicnav ? 
                         topChannel.name :
                         (
-                            <a href={topChannel.url} onClick={this.handleClickTopChannelA.bind(this, topOrder)}>
+                            <a href={topChannel.url} onClick={this.clickTopChannelOnTopListWhenStatic.bind(this, topOrder)}>
                                 {topChannel.name}
                             </a>
                         )
@@ -235,18 +239,31 @@ class Nav extends React.Component {
         )
     }
 
-    renderSubList() { //为什么第一次打开会渲染两次renderSubList()??
+    renderSubList() { 
+        //console.log('exect renderSublist');
         const listStyle = classnames('list', 'list-sub');
         const {channels, dynamicnav} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
         const selectedTopChannel = channels.filter(channel => (
             channel.order === selectedTopChannelOrder
         ))[0];
+       
         if (selectedTopChannel) {
-            const subChannels = selectedTopChannel.subs ? selectedTopChannel.subs : [];
+            const topOrder = selectedTopChannelOrder;
+            const topName = selectedTopChannel.name;
+            const topUrl = selectedTopChannel.url;
+            
+            const subChannels = selectedTopChannel.subs ? JSON.parse(JSON.stringify(selectedTopChannel.subs)) : [];
+            //MARK:使用深拷贝
+            /* NOTE:数组的深拷贝：
+             * 1. arr.slice(0)或arr.concat():伪深拷贝，即到数组只有一维的时候,且每一项不是对象的话这样拷贝看起来和深拷贝效果一样
+             * 2. JSON.parse(JSON.stringify(arr)):可以实现真正的深拷贝，
+             
+            */
+            const subChannelHomeName = selectedTopChannelOrder === 0 ? '网站首页': '频道首页';
             if(subChannels.length === 0 ||subChannels[0].order !== 100) {
                 subChannels.unshift({
-                    name:'频道首页',
+                    name: subChannelHomeName,
                     url:selectedTopChannel.url,
                     order:100
                 });
@@ -254,6 +271,8 @@ class Nav extends React.Component {
             
             const subItems = subChannels.map(subChannel => {
                 const subOrder = subChannel.order;
+                const subName = subOrder === 100 ? '' : subChannel.name;
+                const subUrl = subOrder === 100 ? '' : subChannel.url;
                 const subItemStyle = classnames({
                     item: true,
                     'item-sub':true,
@@ -263,7 +282,7 @@ class Nav extends React.Component {
                 })
                 return (
                     <li styleName={subItemStyle} key={subOrder} order={subOrder} 
-                    onClick={this.changeSelectedSubChannelOnSubList.bind(this, subOrder)}
+                    onClick={dynamicnav ? this.clickSubChannelOnSubListWhenDydnamic.bind(this, subOrder, subName, subUrl, topOrder, topName, topUrl) : null}
                     >
                        {
                             dynamicnav ? 
@@ -290,6 +309,7 @@ class Nav extends React.Component {
 
     renderSimpleNav() {
         const { selectedTopChannelOrder, selectedTopChannelName, selectedTopChannelUrl, selectedSubChannelName, selectedSubChannelUrl } = this.state;
+        const { dynamicnav } = this.props;
         if (selectedTopChannelOrder === 0) { //只有在不为首页的情况下再显示
             return null;
         }
@@ -297,17 +317,27 @@ class Nav extends React.Component {
             selectedTopChannelName &&
             <nav styleName="simple" role="navigation" aria-label="simple-navigation">
                 <ul styleName="simple-list">
-                    <li styleName="simple-item">
-                        <a href={selectedTopChannelUrl}>
-                            { selectedTopChannelName }
-                        </a>
+                    <li styleName="simple-item" onClick={dynamicnav ? this.clickTopChannelOnSimpleNav : null}>
+                        { 
+                            dynamicnav ? 
+                            selectedTopChannelName :
+                            <a href={selectedTopChannelUrl}>
+                                { selectedTopChannelName }
+                            </a>
+
+                        }
                     </li>
                     {
                         selectedSubChannelName && 
                         <li styleName="simple-item">
-                            <a href={selectedSubChannelUrl}>
-                                { selectedSubChannelName }
-                            </a>
+                            {
+                                dynamicnav ?
+                                selectedSubChannelName :
+                                <a href={selectedSubChannelUrl}>
+                                    { selectedSubChannelName }
+                                </a>
+                            }
+                            
                         </li>
                     }
                 </ul>
@@ -316,10 +346,11 @@ class Nav extends React.Component {
     }
 
     render() {
+        //console.log('Exect render');
         const navStyle = classnames({
             nav: true,
             'nav--mobileshow': this.state.showMobileNav
-        })
+        });
         return (
           <div>
             {this.renderHamburg()}

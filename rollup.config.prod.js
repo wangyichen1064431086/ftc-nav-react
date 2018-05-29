@@ -5,7 +5,7 @@ import replace from 'rollup-plugin-replace';
 import postcss from 'rollup-plugin-postcss';
 
 export default {
-  input: './src/js/index.js',
+  input: './src/js/Nav.js',
   output:[
     {
       name:'FtcNav',

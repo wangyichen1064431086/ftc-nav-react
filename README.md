@@ -1,6 +1,6 @@
 # ftc-nav-react
-[![](https://travis-ci.org/wangyichen1064431086/ftc-nav-react.svg?branch=master)](https://travis-ci.org/wangyichen1064431086/ftc-nav-react)
 
+[![](https://travis-ci.org/wangyichen1064431086/ftc-nav-react.svg?branch=master)](https://travis-ci.org/wangyichen1064431086/ftc-nav-react)
 
 The nav component being used by FTC. It is the react version.
 
@@ -12,6 +12,7 @@ npm install "@ftchinese/ftc-nav-react" --save
 ```
 
 ## Usage
+
 Example:
 
 ```
@@ -74,10 +75,8 @@ const channelData = [
 
 class App extends React.Component {
   render() {
-    
-
     return (
-      <Nav channels={channelData} dynamicnav={true} />
+      <Nav channels={channelData} dynamicnav={false} />
     )
   }
 }
@@ -89,7 +88,9 @@ ReactDOM.render(
 ```
 
 ## Props of Nav
+
 You can know about it by the proptypes:
+
 ```
 static propTypes = {
     channels: PropTypes.arrayOf(
@@ -111,24 +112,23 @@ static propTypes = {
     defaultSelectedSubChannelOrder: PropTypes.number
 }
 ```
+
 ### channels
+
 Type Array.The data provided for nav, which is an array and each item of which is an object with required property <code>name</code> and <code>order</code>, and the optional property <code>url</code> and <code>subs</code>.
 
 You should provide the <code>url</code> for each item when the dynamicnav is false.
 
-And the <code>subs</code> is the data of sub channel of each main channel, which follows the same format of main channel.
+And the <code> subs </code> is the data of sub channel of each main channel, which follows the same format of main channel.
 
 ### dynamicnav
-Type Bool. Default true. The signal deciding which type of Nav component you will use. If it is <code>true</code>, the nav is dynamic and you can get different data when clicking the different channel tabs on one single page. And if it is <code>false</code>, the nav is static and you may navigate to another page which depends on the value of <code>url</code> of one channel item.
 
+Type Bool. Default false. The signal deciding which type of Nav component you will use. If it is <code>true</code>, the nav is dynamic and you can get different data when clicking the different channel tabs on one single page. And if it is <code>false</code>, the nav is static and you may navigate to another page which depends on the value of <code>url</code> of one channel item.
 
 ### defaultSelectedTopChannelOrder
+
 Type Number. Default 0. The order of the default selected channel. It can be 0, 1, 2...
 
 ### defaultSelectedSubChannelOrder
+
 Type Number. Default -1. The order of the default selected sub channel. It can be 0, 1, 2...and can also be -1, which means there is no sub channel selected.
-
-## Next Step
-I will add the feature for geting data from API. Then you just need to provide your own API instead of writing the  data by manual.
-
-Thank you!

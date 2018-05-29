@@ -223,6 +223,13 @@ html,body {
     }
 }
 
+// .pushdown-first-item {
+//   display: none;
+//   @include oGridRespondTo($until:L) {
+//     display: block;
+//   }
+// }
+
 .item-top:not(.item-top--selected):hover>.pushdown-list{
   display: block;
   @include oGridRespondTo($until:L) {
