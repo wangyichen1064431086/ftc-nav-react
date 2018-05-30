@@ -144,8 +144,8 @@ class Nav extends React.Component {
         // console.log(this.state);//NOTE:这里的state还是未更新的 —— 已清楚
         this.props.callbackFunc({
             selectedTopChannelOrder: topOrder,
-            selectedSubChannelOrder: topName,
-            selectedTopChannelName: -1, 
+            selectedTopChannelName: topName, 
+            selectedSubChannelOrder: -1,
             selectedSubChannelName: ''
         });
     }
