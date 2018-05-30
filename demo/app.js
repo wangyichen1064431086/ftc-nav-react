@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-//import Nav from '../src/js/Nav.js';
-import Nav from '../build/index.es.js';
+import Nav from '../src/js/Nav.js';
+//import Nav from '../build/index.es.js';
 
 import { channelData } from './data.js';
 
