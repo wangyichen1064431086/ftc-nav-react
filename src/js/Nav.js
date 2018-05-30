@@ -136,7 +136,7 @@ class Nav extends React.Component {
     clickTopChannelOnTopListWhenDynamic(topOrder,topName, e) { //动态情况下，点击topChannel发生的事情
         this.setState({
             selectedTopChannelOrder:topOrder,
-            selectedSubChannelName:topName,
+            selectedTopChannelName:topName,
             selectedSubChannelOrder:-1,
             selectedSubChannelName:''
         });
