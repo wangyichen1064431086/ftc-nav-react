@@ -74,12 +74,13 @@ html,body {
     display: inline-block;
 		list-style-type: none;
 		margin: 0;
-		padding: 0;
+    padding: 0;
+    cursor: pointer;
+
 		a {
 			display: inline-block;
 			
 			text-align: center;
-			cursor: pointer;
 			text-decoration:none;
 		}
 		@include oGridRespondTo(L) {
@@ -91,7 +92,6 @@ html,body {
 			a {
 				display: inline-block;
 				text-align: right;
-				cursor: pointer;
 			}
 		}
 }
@@ -198,29 +198,30 @@ html,body {
 
 .pushdown-item {
   list-style-position: outside;
-		list-style-type: none;
-		font-size: 14px;
-		margin: 0;
-		padding: 0;
-		border-top: 1px solid #666;
-		&:hover,&:active {
-			background: #27757b;
-		}
-		 a {
-			padding: 0 25px 0 15px;
-			height: 30px;
-			line-height: 30px;
-			display: inline-block;
-			text-decoration: none;
-			white-space: nowrap;/*NOTE：否则a会换行*/
-			cursor: pointer;
-    }
-    &.pushdown-item--dynamic {
-      padding: 0 25px 0 15px;
-			height: 30px;
-			line-height: 30px;
-			cursor: pointer;
-    }
+  list-style-type: none;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #666;
+  cursor: pointer;
+  &:hover,&:active {
+    background: #27757b;
+  }
+    a {
+    padding: 0 25px 0 15px;
+    height: 30px;
+    line-height: 30px;
+    display: inline-block;
+    text-decoration: none;
+    white-space: nowrap;/*NOTE：否则a会换行*/
+    cursor: pointer;
+  }
+  &.pushdown-item--dynamic {
+    padding: 0 25px 0 15px;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+  }
 }
 
 // .pushdown-first-item {
@@ -264,7 +265,7 @@ html,body {
   font-size: 16.8px;
   height: 100%;
   padding: 0 5px 0 0;
-
+  cursor: pointer;
   a {
     text-decoration: none;
     display: inline-block;
