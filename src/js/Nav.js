@@ -445,13 +445,16 @@ class Nav extends React.Component {
     render() {
         //console.log('Exect render');
         const {showMobileNav, stickyAll} = this.state;
+        const allStyle = classnames({
+            'sticky': stickyAll
+
+        });
         const navStyle = classnames({
-            nav: true,
+            'nav': true,
             'nav--mobileshow': this.state.showMobileNav,
-            sticky: stickyAll
         });
         return (
-          <div ref="all">
+          <div ref="all" styleName={allStyle}>
             {this.renderHamburg()}
             <nav role="navigation" aria-label="main-navigation" styleName={navStyle}>
                 {this.renderTopList()}
