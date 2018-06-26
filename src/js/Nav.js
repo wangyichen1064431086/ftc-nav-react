@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import CSSModules from 'react-css-modules';
 
 import Hamburg from './Hamburg.js';
+import {getScrollTop, getOffsetTop} from './utils';
 
 import nav from '../scss/nav.scss';
 
@@ -29,13 +30,15 @@ class Nav extends React.Component {
         dynamicnav: PropTypes.bool,
         defaultSelectedTopChannelOrder: PropTypes.number,
         defaultSelectedSubChannelOrder: PropTypes.number,
-        callbackFunc: PropTypes.func//回调函数，需要从父元素传递进来，可有可无，用于向父元素传递选中的topChannelOrder和SubChannelOrder
+        callbackFunc: PropTypes.func,//回调函数，需要从父元素传递进来，可有可无，用于向父元素传递选中的topChannelOrder和SubChannelOrder
+        sticky: PropTypes.oneOf(['top','sub','all','none'])
     }
     
     static defaultProps = {
         defaultSelectedTopChannelOrder: 0,
         defaultSelectedSubChannelOrder: -1,
         dynamicnav: false,
+        sticky: 'none',
         callbackFunc: function() {
             // console.log('Passing:')
             // console.log(Array.from(arguments)[0]);//NOTE:箭头函数中无法使用arguments
@@ -52,7 +55,10 @@ class Nav extends React.Component {
             selectedTopChannelUrl: '',
             selectedSubChannelUrl: '',
             showMobileNav: false,
-            isMobile: false
+            isMobile: false,
+            stickyTop: false,
+            stickySub: false,
+            stickyAll: false
         }
         
         this.clickHamburg = this.clickHamburg.bind(this);
@@ -60,6 +66,8 @@ class Nav extends React.Component {
         //this.preventGotoHrefWhenMobile = this.preventGotoHrefWhenMobile.bind(this);
         this.callCbFunc = this.callCbFunc.bind(this);
         this.clickTopChannelOnSimpleNav = this.clickTopChannelOnSimpleNav.bind(this);
+
+        this.stickyWhenScroll = this.stickyWhenScroll.bind(this);
     }
     componentWillMount() {
        this.initialSelectedChannelInfoByOrder();
@@ -67,6 +75,15 @@ class Nav extends React.Component {
     }
     componentDidMount() {
       this.callCbFunc();
+      const topNavNode = ReactDOM.findDOMNode(this.refs.topnav);
+      const subNavNode = ReactDOM.findDOMNode(this.refs.subnav);
+      const allNode = ReactDOM.findDOMNode(this.refs.all);
+      this.topNavOffsetTop = getOffsetTop(topNavNode);
+      this.subNavOffsetTop = getOffsetTop(subNavNode);
+      this.allOffsetTop = getOffsetTop(allNode);
+
+      window.addEventListener('scroll', this.stickyWhenScroll);
+
     }
     componentDidUpdate() {
       //console.log('exect componentDidUpdate');
@@ -87,6 +104,25 @@ class Nav extends React.Component {
     //     this.setSelectedChannelNameByOrder();
     //     this.callCbFunc();
     // } //会造成setState的循环调用，待查清楚原因
+
+    stickyWhenScroll() {
+        const scrollTopNow = getScrollTop();
+        const {sticky} = this.props;
+
+        if (sticky === 'top') {
+            this.setState({
+                stickyTop: scrollTopNow > this.topNavOffsetTop
+            })
+        } else if (sticky === 'sub') {
+            this.setState({
+                stickySub: scrollTopNow > this.subNavOffsetTop
+            })
+        } else if (sticky === 'all') {
+            this.setState({
+                stickyAll: scrollTopNow > this.allOffsetTop
+            })
+        }
+    }
     initialSelectedChannelInfoByOrder() {
         const {channels} = this.props;
         const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
@@ -219,9 +255,14 @@ class Nav extends React.Component {
     }
 
     renderTopList() {
-        const listStyle = classnames('list','list-top');
         const {channels, dynamicnav} = this.props;
-        const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
+        const {selectedTopChannelOrder, selectedSubChannelOrder, stickyTop} = this.state;
+        const listStyle = classnames({
+            'list': true,
+            'list-top':true,
+            'sticky': stickyTop
+        });
+  
         const topChannels = channels;
         const topItems = topChannels.map((topChannel, i) => {
             const topItemStyle = classnames({
@@ -277,7 +318,7 @@ class Nav extends React.Component {
             )
         });
         return (
-            <ul styleName={listStyle}>
+            <ul styleName={listStyle} ref="topnav">
                 {topItems}
             </ul>
         )
@@ -285,9 +326,17 @@ class Nav extends React.Component {
 
     renderSubList() { 
         //console.log('exect renderSublist');
-        const listStyle = classnames('list', 'list-sub');
         const {channels, dynamicnav} = this.props;
-        const {selectedTopChannelOrder, selectedSubChannelOrder} = this.state;
+        const {selectedTopChannelOrder, selectedSubChannelOrder, stickySub} = this.state;
+
+        const listStyle = classnames(
+            'list', 
+            'list-sub',
+            {
+                'sticky':stickySub
+            }
+        );
+        
         const selectedTopChannel = channels.filter(channel => (
             channel.order === selectedTopChannelOrder
         ))[0];
@@ -343,7 +392,7 @@ class Nav extends React.Component {
                 )
             });
             return (
-                <ul styleName={listStyle}>
+                <ul styleName={listStyle} ref="subnav">
                     {subItems}
                 </ul>
             )
@@ -395,12 +444,14 @@ class Nav extends React.Component {
 
     render() {
         //console.log('Exect render');
+        const {showMobileNav, stickyAll} = this.state;
         const navStyle = classnames({
             nav: true,
-            'nav--mobileshow': this.state.showMobileNav
+            'nav--mobileshow': this.state.showMobileNav,
+            sticky: stickyAll
         });
         return (
-          <div>
+          <div ref="all">
             {this.renderHamburg()}
             <nav role="navigation" aria-label="main-navigation" styleName={navStyle}>
                 {this.renderTopList()}

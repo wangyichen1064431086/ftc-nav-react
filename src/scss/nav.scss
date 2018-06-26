@@ -286,3 +286,9 @@ html,body {
     vertical-align: middle;
   }
 }
+.sticky {
+  @include oGridRespondTo(L) {
+    position: fixed;
+    top: 0;
+  }
+}
