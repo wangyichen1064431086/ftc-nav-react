@@ -105,11 +105,13 @@ static propTypes = {
                     url: PropTypes.string
                 })
             )
+
         })
     ),
     dynamicnav: PropTypes.bool,
     defaultSelectedTopChannelOrder: PropTypes.number,
-    defaultSelectedSubChannelOrder: PropTypes.number
+    defaultSelectedSubChannelOrder: PropTypes.number,
+    sticky: PropTypes.oneOf(['top','sub','all','none'])
 }
 ```
 
@@ -132,3 +134,7 @@ Type Number. Default 0. The order of the default selected channel. It can be 0, 
 ### defaultSelectedSubChannelOrder
 
 Type Number. Default -1. The order of the default selected sub channel. It can be 0, 1, 2...and can also be -1, which means there is no sub channel selected.
+
+### sticky
+
+Type String, one of 'top','sub','all','none'. This is **the new prop in this version**. With it you can set which part of the nav to be sticky on the top of page when scrolling.

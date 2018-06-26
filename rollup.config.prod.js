@@ -10,12 +10,12 @@ export default {
     {
       name:'FtcNav',
       sourcemap: true,
-      /*
+      
       globals:{
         react: 'React',
         'react-dom': 'ReactDOM'
       },
-      */
+      
       file: './build/index.js',
       format: 'umd'
       
@@ -23,12 +23,12 @@ export default {
     {
       name:'FtcNav',
       sourcemap: true,
-      /*
+      
       globals:{
         react: 'React',
         'react-dom': 'ReactDOM'
       },
-      */
+
       file: './build/index.es.js',
       format: 'es'
     },
@@ -62,7 +62,7 @@ export default {
     })
   ],
 
-  //external: ['react', 'react-dom'],
+  external: ['react', 'react-dom'],
 
   
 }
