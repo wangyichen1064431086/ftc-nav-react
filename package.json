@@ -1,6 +1,6 @@
 {
   "name": "@ftchinese/ftc-nav-react",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "The nav partial of ftc-header. It is the react version.",
   "main": "build/index.js",
   "module": "build/index.es.js",
