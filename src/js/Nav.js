@@ -82,14 +82,14 @@ class Nav extends React.Component {
       this.subNavOffsetTop = getOffsetTop(subNavNode);
       this.allOffsetTop = getOffsetTop(allNode);
 
-      window.addEventListener('scroll', this.stickyWhenScroll);
+      window.addEventListener('scroll', () => {
+          window.requestAnimationFrame(this.stickyWhenScroll);//节流的作用，每16ms触发一次
+          //和 _.throttle(dosomething, 16)等价
+        
+      });
 
     }
-    componentDidUpdate() {
-      //console.log('exect componentDidUpdate');
-      //this.callCbFunc(); //NOTE:这里的话state还是未更新的，
-      //待研究：componentDidUpdate不是在render()完成以后执行吗？render()就是基于已经改变的this.state，那么这里的
-    }
+
 
     detectIfTheDeviceIsMobile() {
         //console.log('exect detectIfTheDeviceIsMobile');
@@ -106,7 +106,7 @@ class Nav extends React.Component {
     // } //会造成setState的循环调用，待查清楚原因
 
     stickyWhenScroll() {
-        const scrollTopNow = getScrollTop();
+        const scrollTopNow =  getScrollTop();
         const {sticky} = this.props;
 
         if (sticky === 'top') {
@@ -177,7 +177,7 @@ class Nav extends React.Component {
             selectedSubChannelName:''
         });
         // console.log('now state:');
-        // console.log(this.state);//NOTE:这里的state还是未更新的 —— 已清楚
+        // console.log(this.state);//NOTE:这里的state还是未更新的
         this.props.callbackFunc({
             selectedTopChannelOrder: topOrder,
             selectedTopChannelName: topName, 
